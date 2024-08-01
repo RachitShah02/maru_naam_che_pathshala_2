@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maru_naam_che_pathshala_2/screens/dashboard/dashboard.dart';
-import 'package:maru_naam_che_pathshala_2/utils/colors.dart';
+import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
+
+import 'utils/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        home: const DashBoardScreen(),
+        home: const SplashScreen(),
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,
         theme: ThemeData(

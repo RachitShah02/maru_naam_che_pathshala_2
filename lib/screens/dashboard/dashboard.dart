@@ -26,11 +26,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   ];
   List<MenuItem> d = [
     MenuItem(
-        value: '1',
-        label: 'My Account',
-        icon: const Icon(Icons.person),
-        target: Container()),
-    MenuItem(
         value: '2',
         label: 'Add Child',
         icon: const Icon(Icons.person_add),
@@ -41,9 +36,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         icon: const Icon(Icons.switch_account),
         target: Container()),
   ];
+  String studentname = '';
   @override
   void initState() {
     statusBarColor(navigationBarColor: AppColors.primaryColor);
+    List<StudentModel> studentList = filterStudents();
+    studentname = studentList[0].fullName!;
     super.initState();
   }
 
@@ -56,6 +54,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       backgroundColor: _page == 0 ? Colors.grey.shade100 : Colors.white,
       key: _key,
       bottomNavigationBar: bottomBar(),
@@ -92,23 +91,28 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   size: 28,
                 )),
             5.hs(),
-            const CircleAvatar(), // TODO : Profile Photo
+            Image.asset(
+              logo,
+              width: 45,
+              fit: BoxFit.fitWidth,
+            ),
             10.hs(),
             VStack([
-              "Veeha Rachit Shah"
-                  .text
+              studentname.text
                   .scale(0.9)
                   .white
                   .maxLines(1)
                   .overflow(TextOverflow.ellipsis)
                   .make(),
-              "MNP NO : MNP0001".text.scale(0.7).white.make()
+              "MNP ID : ${box.read(Keys.sid)}".text.scale(0.7).white.make()
             ]).flexible(), // TODO : name id
             20.hs(),
             const Icon(
               Icons.notifications,
               color: Colors.white,
-            ).onTap(() {}),
+            ).onTap(() {
+              log(box.read(Keys.sid));
+            }),
             PopupMenuButton(
               iconSize: 30,
               shape: RoundedRectangleBorder(
@@ -152,7 +156,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       ],
       color: AppColors.primaryColor,
       buttonBackgroundColor: AppColors.primaryColor,
-      backgroundColor: (_page == 0) ? Colors.grey.shade100 : Colors.white,
+      backgroundColor: (_page == 0) ? Colors.transparent : Colors.white,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 350),
       onTap: (index) {

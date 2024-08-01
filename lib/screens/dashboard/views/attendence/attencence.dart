@@ -9,6 +9,15 @@ class AttendenceScreen extends StatefulWidget {
 }
 
 class _AttendenceScreenState extends State<AttendenceScreen> {
+  bool isLoad = false;
+  List<AttListElement> list = [];
+  int total = 0;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,32 +63,39 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
           ),
           20.vs(),
           Expanded(
-              child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (context, i) {
-                    return Card(
-                      child: ListTile(
-                        onTap: () {
-                          Get.dialog(const Material(
-                              color: Colors.transparent,
-                              child: Center(
-                                child: SizedBox(
-                                    height: 300, child: CalendarWidget()),
-                              )).onTap(() => Get.back()));
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        tileColor: Colors.grey.shade200,
-                        title: MyDate.currMonth().text.bold.make(),
-                        trailing: HStack([
-                          "20/24 Days".text.make(),
-                          10.hs(),
-                          const Icon(Icons.calendar_month)
-                        ]),
-                        dense: true,
-                      ),
-                    );
-                  })),
+              child: (isLoad)
+                  ? ListView.builder(
+                      itemCount: list.length,
+                      itemBuilder: (context, i) {
+                        return Card(
+                          child: ListTile(
+                            onTap: () {
+                              Get.dialog(const Material(
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: SizedBox(
+                                        height: 300,
+                                        child: CalendarWidget(
+                                          attendenceList: [],
+                                        )),
+                                  )).onTap(() => Get.back()));
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            tileColor: Colors.grey.shade200,
+                            title: list[i].month!.text.bold.make(),
+                            trailing: HStack([
+                              "${list[i].attendance} / ${list[i].totalDays} Days"
+                                  .text
+                                  .make(),
+                              10.hs(),
+                              const Icon(Icons.calendar_month)
+                            ]),
+                            dense: true,
+                          ),
+                        );
+                      })
+                  : progressInd()),
           ListTile(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -90,11 +106,20 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
               color: Colors.white,
             ),
             title: "TOTAL ATTENDENCE".text.white.bold.make(),
-            trailing: "200 DAYS".text.white.bold.lg.make(),
+            trailing: "$total DAYS".text.white.bold.lg.make(),
           ),
           20.vs()
         ],
       ).px(15),
     );
+  }
+
+  getData() async {
+    final data = await ApiService.getData(endPoint: EndPoints.attendenceList);
+    final result = attendenceListModelFromJson(data);
+    list = result.list!;
+    total = result.total!;
+    isLoad = true;
+    setState(() {});
   }
 }

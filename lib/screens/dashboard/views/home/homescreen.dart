@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:maru_naam_che_pathshala_2/models/homescreen_model.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
@@ -12,61 +14,115 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currSlide = 0;
-  String sutra = 'Annath';
-  String gatha = '1/4';
-  String sutraStartDate = '10-07-2024';
+  List<Attendence>? attendence;
+  List<HomeSlider>? homeSlider;
+  String currentPoints = "0";
+  String totalPoints = "0";
+  Sutra? sutra;
+  Pathshala? pathshala;
+  TotalAttendence? totalAttendence;
+  bool isLoad = false;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey.shade100,
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                slider(),
-                15.vs(),
-                detailsCard().px(10),
-                15.vs(),
-                Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: ListTile(
-                    onTap: () {
-                      Get.to(() => const PointScreen(
-                            showAppBar: true,
-                          ));
-                    },
-                    title: MyDate.currMonth().text.bold.make(),
-                    subtitle: "Current Month".text.make(),
-                    trailing: HStack([
-                      "200 Points".text.make(),
-                      10.hs(),
-                      const Icon(Icons.chevron_right_rounded)
-                    ]),
-                    dense: true,
+          child: (isLoad)
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      slider(),
+                      15.vs(),
+                      ListTile(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        dense: true,
+                        tileColor: AppColors.primaryColor,
+                        leading: const Icon(
+                          FontAwesomeIcons.trophy,
+                          color: Colors.white,
+                        ),
+                        title: "TOTAL POINTS".text.white.bold.make(),
+                        trailing: HStack([
+                          const Icon(
+                            FontAwesomeIcons.medal,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          10.hs(),
+                          totalPoints.text.white.bold.lg.make(),
+                        ]),
+                      ).px(15),
+                      15.vs(),
+                      detailsCard().px(10),
+                      15.vs(),
+                      currentMonthPoints().px(10),
+                      15.vs(),
+                      attendenceCard().px(10),
+                      15.vs(),
+                      if (sutra != null) sutraCard().px(10),
+                      30.vs()
+                    ],
                   ),
-                ).px(10),
-                15.vs(),
-                attendenceCard().px(10),
-                15.vs(),
-                sutraCard().px(10),
-                30.vs()
-              ],
-            ),
-          ),
+                )
+              : Center(
+                  child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                )),
         ),
         floatingActionButton: heroRoute(
             context: context,
             heroTag: "card",
             icon: FontAwesomeIcons.qrcode,
             barrierColor: Colors.transparent,
-            pushTo: const IdCardScreen(
-              qrData: 'MNP0001',
+            pushTo: IdCardScreen(
+              qrData: box.read(Keys.sid),
             )));
   }
 
+  Card currentMonthPoints() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        onTap: () {
+          Get.to(() => const PointScreen(
+                showAppBar: true,
+              ));
+        },
+        title: MyDate.currMonth().text.bold.make(),
+        subtitle: "Current Month".text.make(),
+        trailing: HStack([
+          const Icon(
+            FontAwesomeIcons.medal,
+            size: 15,
+            color: Colors.grey,
+          ),
+          10.hs(),
+          "$currentPoints Points".text.make(),
+          10.hs(),
+          const Icon(Icons.chevron_right_rounded)
+        ]),
+      ),
+    );
+  }
+
   Card sutraCard() {
+    String sutraName = '';
+    String gatha = '';
+    String sutraDate = '';
+    if (sutra != null) {
+      sutraName = sutra!.sutra!;
+      gatha = sutra!.gatha!.toString();
+      sutraDate = sutra!.date!;
+    }
+
     return Card(
       elevation: 2,
       child: Container(
@@ -77,9 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             "Current Learning".text.xl.thin.make(),
             10.vs(),
-            "Sutra : $sutra".text.make().py(5),
+            "Sutra : $sutraName".text.make().py(5),
             "Gatha : $gatha".text.make().py(5),
-            "Starting Date : $sutraStartDate".text.make().py(5)
+            "Starting Date : $sutraDate".text.make().py(5)
           ],
         ),
       ),
@@ -97,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     "Attendence".text.thin.make(),
                     "${MyDate.currMonth()} ${MyDate.currYear()}"
@@ -109,14 +166,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Spacer(),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     "Total Attendence".text.thin.make(),
-                    "20 / 25 days".text.bold.make()
+                    "${totalAttendence!.attendance} / ${totalAttendence!.days} days"
+                        .text
+                        .bold
+                        .make()
                   ],
                 )
               ],
             ),
-            const CalendarWidget()
+            CalendarWidget(
+              attendenceList: attendence!,
+            )
           ],
           crossAlignment: CrossAxisAlignment.start,
         ),
@@ -130,45 +193,30 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.all(10),
         width: Get.width,
-        child: HStack(
-          [
-            VStack([
-              "Pathshala Details".text.lg.make(),
-              10.vs(),
-              "Pathshala : ".text.make(),
-              5.vs(),
-              "Guruji : ".text.make(),
-              5.vs(),
-              "Guruji No : ".text.make()
-            ]).flexible(),
-            20.hs(),
-            VStack(
-              [
-                Icon(
-                  FontAwesomeIcons.trophy,
-                  color: AppColors.primaryColor,
-                  size: 50,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Center(
-                      child: CustomPaint(
-                        size: const Size(80, 22),
-                        painter: RibbonPainter(),
-                      ),
-                    ),
-                    Center(child: "2000".text.bold.white.make()),
-                  ],
-                ),
-                10.vs(),
-                "Total Points".text.lg.make(),
-              ],
-              crossAlignment: CrossAxisAlignment.center,
-            ).flexible()
-          ],
-          crossAlignment: CrossAxisAlignment.start,
-        ),
+        child: VStack([
+          "Pathshala Details".text.lg.make(),
+          const Divider(),
+          10.vs(),
+          richText(context,
+              firstText: "Pathshala : ",
+              secondText: pathshala!.pathshala!,
+              sstyle: MyTextStyle.bold()),
+          5.vs(),
+          richText(context,
+              firstText: "Time : ",
+              secondText: pathshala!.time!,
+              sstyle: MyTextStyle.bold()),
+          5.vs(),
+          richText(context,
+              firstText: "Guruji : ",
+              secondText: pathshala!.panditji!,
+              sstyle: MyTextStyle.bold()),
+          5.vs(),
+          richText(context,
+              firstText: "Guruji No: ",
+              secondText: pathshala!.mobile!,
+              sstyle: MyTextStyle.bold()),
+        ]),
       ),
     );
   }
@@ -207,29 +255,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-}
 
-class RibbonPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.primaryColor
-      ..style = PaintingStyle.fill;
-
-    final path = Path()
-      ..moveTo(0, size.height / 2)
-      ..lineTo(size.width * -0.1, 0)
-      ..lineTo(size.width * 1.1, 0)
-      ..lineTo(size.width, size.height / 2)
-      ..lineTo(size.width * 1.1, size.height)
-      ..lineTo(size.width * -0.1, size.height)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  getData() async {
+    final data = await ApiService.getData(endPoint: EndPoints.homescreen);
+    log(data);
+    final result = homeScreenModelFromJson(data);
+    attendence = result.attendence;
+    homeSlider = result.slider;
+    currentPoints = result.currentPoints!;
+    totalPoints = result.totalPoints!;
+    sutra = result.sutra;
+    pathshala = result.pathshala;
+    totalAttendence = result.totalAttendence;
+    isLoad = true;
+    setState(() {});
   }
 }

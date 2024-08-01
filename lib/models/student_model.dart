@@ -1,11 +1,22 @@
 import 'dart:convert';
 
+List<StudentModel> studentModelListFromJson(String str) {
+  final jsonData = json.decode(str);
+  return List<StudentModel>.from(jsonData.map((x) => StudentModel.fromJson(x)));
+}
+
+String studentModelListToJson(List<StudentModel> data) {
+  final dyn = List<dynamic>.from(data.map((x) => x.toJson()));
+  return json.encode(dyn);
+}
+
 StudentModel studentModelFromJson(String str) =>
     StudentModel.fromJson(json.decode(str));
 
 String studentModelToJson(StudentModel data) => json.encode(data.toJson());
 
 class StudentModel {
+  final String? sid;
   final String? fullName;
   final String? fullAddress;
   final String? birthdate;
@@ -17,6 +28,7 @@ class StudentModel {
   final int? pathshalaId;
 
   StudentModel({
+    this.sid,
     this.fullName,
     this.fullAddress,
     this.birthdate,
@@ -29,6 +41,7 @@ class StudentModel {
   });
 
   factory StudentModel.fromJson(Map<String, dynamic> json) => StudentModel(
+        sid: json['sid'],
         fullName: json["full_name"],
         fullAddress: json["full_address"],
         birthdate: json["birthdate"],
@@ -41,6 +54,7 @@ class StudentModel {
       );
 
   Map<String, dynamic> toJson() => {
+        "sid": sid,
         "full_name": fullName,
         "full_address": fullAddress,
         "birthdate": birthdate,

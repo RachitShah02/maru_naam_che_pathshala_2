@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class PinLoinScreen extends StatefulWidget {
@@ -9,6 +12,8 @@ class PinLoinScreen extends StatefulWidget {
 }
 
 class _PinLoinScreenState extends State<PinLoinScreen> {
+  final controller = TextEditingController();
+  bool isLogin = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +43,7 @@ class _PinLoinScreenState extends State<PinLoinScreen> {
                 ],
               ),
               TextField(
+                controller: controller,
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
@@ -52,10 +58,20 @@ class _PinLoinScreenState extends State<PinLoinScreen> {
               ),
               20.vs(),
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  String pin = controller.text.trim();
+                  if (pin != '') {
+                    if (!isLogin) {
+                      setState(() {
+                        isLogin = true;
+                      });
+                      handleLogin(pin);
+                    }
+                  }
+                },
                 label: "LOGIN".text.white.make().marginOnly(left: 10),
                 icon: Visibility(
-                  visible: false,
+                  visible: isLogin,
                   replacement: const Icon(
                     Icons.login,
                     color: Colors.white,
@@ -76,5 +92,43 @@ class _PinLoinScreenState extends State<PinLoinScreen> {
         ),
       ),
     );
+  }
+
+  void handleLogin(String qrCodeData) async {
+    log(box.read(Keys.sid));
+    qrCodeData = qrCodeData.toUpperCase();
+    log(qrCodeData);
+    box.write(Keys.sid, qrCodeData);
+    final data = await ApiService.getData(endPoint: 'login');
+    log(data);
+    final result = studentModelFromJson(data);
+    if (result.sid == qrCodeData) {
+      List<StudentModel> studentList = [];
+      String? oldList = box.read(Keys.studentList);
+
+      if (oldList != null && oldList.isNotEmpty) {
+        studentList = studentModelListFromJson(oldList);
+      }
+
+      studentList.add(result);
+
+      box.write(Keys.studentList, studentModelListToJson(studentList));
+      customSnackBar(
+        title: "Alert",
+        message: "Login Successful",
+        type: SnackBarType.success,
+      );
+      Get.offAll(() => const DashBoardScreen(),
+          transition: Transition.leftToRight);
+    } else {
+      box.write(Keys.sid, '');
+      customSnackBar(
+        title: "Alert",
+        message: "Invalid MNP ID",
+      );
+      setState(() {
+        isLogin = false;
+      });
+    }
   }
 }

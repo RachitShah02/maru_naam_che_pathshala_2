@@ -12,17 +12,21 @@ String homeScreenModelToJson(HomeScreenModel data) =>
 
 class HomeScreenModel {
   final List<Attendence>? attendence;
-  final List<Slider>? slider;
-  final List<Point>? currentPoints;
-  final List<Point>? totalPoints;
-  final List<Sutra>? sutra;
+  final TotalAttendence? totalAttendence;
+  final List<HomeSlider>? slider;
+  final String? currentPoints;
+  final String? totalPoints;
+  final Sutra? sutra;
+  final Pathshala? pathshala;
 
   HomeScreenModel({
     this.attendence,
+    this.totalAttendence,
     this.slider,
     this.currentPoints,
     this.totalPoints,
     this.sutra,
+    this.pathshala,
   });
 
   factory HomeScreenModel.fromJson(Map<String, dynamic> json) =>
@@ -31,38 +35,33 @@ class HomeScreenModel {
             ? []
             : List<Attendence>.from(
                 json["attendence"]!.map((x) => Attendence.fromJson(x))),
+        totalAttendence: json["total_attendence"] == null
+            ? null
+            : TotalAttendence.fromJson(json["total_attendence"]),
         slider: json["slider"] == null
             ? []
-            : List<Slider>.from(json["slider"]!.map((x) => Slider.fromJson(x))),
-        currentPoints: json["current_points"] == null
-            ? []
-            : List<Point>.from(
-                json["current_points"]!.map((x) => Point.fromJson(x))),
-        totalPoints: json["total_points"] == null
-            ? []
-            : List<Point>.from(
-                json["total_points"]!.map((x) => Point.fromJson(x))),
-        sutra: json["sutra"] == null
-            ? []
-            : List<Sutra>.from(json["sutra"]!.map((x) => Sutra.fromJson(x))),
+            : List<HomeSlider>.from(
+                json["slider"]!.map((x) => HomeSlider.fromJson(x))),
+        currentPoints: json["current_points"],
+        totalPoints: json["total_points"],
+        sutra: json["sutra"] == null ? null : Sutra.fromJson(json["sutra"]),
+        pathshala: json["pathshala"] == null
+            ? null
+            : Pathshala.fromJson(json["pathshala"]),
       );
 
   Map<String, dynamic> toJson() => {
         "attendence": attendence == null
             ? []
             : List<dynamic>.from(attendence!.map((x) => x.toJson())),
+        "total_attendence": totalAttendence!.toJson(),
         "slider": slider == null
             ? []
             : List<dynamic>.from(slider!.map((x) => x.toJson())),
-        "current_points": currentPoints == null
-            ? []
-            : List<dynamic>.from(currentPoints!.map((x) => x.toJson())),
-        "total_points": totalPoints == null
-            ? []
-            : List<dynamic>.from(totalPoints!.map((x) => x.toJson())),
-        "sutra": sutra == null
-            ? []
-            : List<dynamic>.from(sutra!.map((x) => x.toJson())),
+        "current_points": currentPoints,
+        "total_points": totalPoints,
+        "sutra": sutra?.toJson(),
+        "pathshala": pathshala?.toJson(),
       };
 }
 
@@ -86,36 +85,34 @@ class Attendence {
       };
 }
 
-class Point {
-  final String? totalPoints;
-
-  Point({
-    this.totalPoints,
+class TotalAttendence {
+  final int? attendance;
+  final int? days;
+  TotalAttendence({
+    this.attendance,
+    this.days,
   });
 
-  factory Point.fromJson(Map<String, dynamic> json) => Point(
-        totalPoints: json["total_points"],
-      );
+  factory TotalAttendence.fromJson(Map<String, dynamic> json) =>
+      TotalAttendence(attendance: json["attendance"], days: json["days"]);
 
-  Map<String, dynamic> toJson() => {
-        "total_points": totalPoints,
-      };
+  Map<String, dynamic> toJson() => {"attendance": attendance, "days": days};
 }
 
-class Slider {
+class HomeSlider {
   final int? id;
   final String? img;
   final String? type;
   final String? target;
 
-  Slider({
+  HomeSlider({
     this.id,
     this.img,
     this.type,
     this.target,
   });
 
-  factory Slider.fromJson(Map<String, dynamic> json) => Slider(
+  factory HomeSlider.fromJson(Map<String, dynamic> json) => HomeSlider(
         id: json["id"],
         img: json["img"],
         type: json["type"],
@@ -135,6 +132,7 @@ class Sutra {
   final String? sid;
   final int? sutraId;
   final String? sutra;
+  final int? gatha;
   final String? date;
   final String? time;
 
@@ -143,6 +141,7 @@ class Sutra {
     this.sid,
     this.sutraId,
     this.sutra,
+    this.gatha,
     this.date,
     this.time,
   });
@@ -152,6 +151,7 @@ class Sutra {
         sid: json["sid"],
         sutraId: json["sutra_id"],
         sutra: json["sutra"],
+        gatha: json["gatha"],
         date: json["date"],
         time: json["time"],
       );
@@ -161,7 +161,33 @@ class Sutra {
         "sid": sid,
         "sutra_id": sutraId,
         "sutra": sutra,
+        "gatha": gatha,
         "date": date,
+        "time": time,
+      };
+}
+
+class Pathshala {
+  final String? pathshala;
+  final String? time;
+  final String? panditji;
+  final String? mobile;
+  Pathshala({
+    this.pathshala,
+    this.time,
+    this.panditji,
+    this.mobile,
+  });
+  factory Pathshala.fromJson(Map<String, dynamic> json) => Pathshala(
+      pathshala: json["pathshala"],
+      panditji: json["panditji"],
+      time: json["time"],
+      mobile: json["mobile"]);
+
+  Map<String, dynamic> toJson() => {
+        "pathshala": pathshala,
+        "panditji": panditji,
+        "mobile": mobile,
         "time": time,
       };
 }

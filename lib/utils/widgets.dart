@@ -75,3 +75,9 @@ class MyTextStyle {
     );
   }
 }
+
+Widget progressInd() => Center(
+      child: CircularProgressIndicator(
+        color: AppColors.primaryColor,
+      ),
+    );

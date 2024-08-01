@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maru_naam_che_pathshala_2/screens/login/login.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -77,6 +78,11 @@ class MyDrawer extends StatelessWidget {
                   title: "My Profile".text.make(),
                 ),
                 ListTile(
+                  onTap: () {
+                    box.write(Keys.sid, '');
+                    box.write(Keys.studentList, '');
+                    Get.offAll(() => const LoginScreen());
+                  },
                   leading: const Icon(
                     FontAwesomeIcons.arrowRightFromBracket,
                     size: 22,

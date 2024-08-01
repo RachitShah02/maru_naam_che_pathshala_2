@@ -36,21 +36,50 @@ class AttendenceCalanderModel {
 //
 //     final attendenceListModel = attendenceListModelFromJson(jsonString);
 
-List<AttendenceListModel> attendenceListModelFromJson(String str) =>
-    List<AttendenceListModel>.from(
-        json.decode(str).map((x) => AttendenceListModel.fromJson(x)));
+// To parse this JSON data, do
+//
+//     final attendenceListModel = attendenceListModelFromJson(jsonString);
 
-String attendenceListModelToJson(List<AttendenceListModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+AttendenceListModel attendenceListModelFromJson(String str) =>
+    AttendenceListModel.fromJson(json.decode(str));
+
+String attendenceListModelToJson(AttendenceListModel data) =>
+    json.encode(data.toJson());
 
 class AttendenceListModel {
+  final List<AttListElement>? list;
+  final int? total;
+
+  AttendenceListModel({
+    this.list,
+    this.total,
+  });
+
+  factory AttendenceListModel.fromJson(Map<String, dynamic> json) =>
+      AttendenceListModel(
+        list: json["list"] == null
+            ? []
+            : List<AttListElement>.from(
+                json["list"]!.map((x) => AttListElement.fromJson(x))),
+        total: json["total"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "list": list == null
+            ? []
+            : List<dynamic>.from(list!.map((x) => x.toJson())),
+        "total": total,
+      };
+}
+
+class AttListElement {
   final String? month;
   final int? attendance;
   final String? totalPoints;
   final int? totalDays;
   final String? year;
 
-  AttendenceListModel({
+  AttListElement({
     this.month,
     this.attendance,
     this.totalPoints,
@@ -58,8 +87,7 @@ class AttendenceListModel {
     this.year,
   });
 
-  factory AttendenceListModel.fromJson(Map<String, dynamic> json) =>
-      AttendenceListModel(
+  factory AttListElement.fromJson(Map<String, dynamic> json) => AttListElement(
         month: json["month"],
         attendance: json["attendance"],
         totalPoints: json["total_points"],
