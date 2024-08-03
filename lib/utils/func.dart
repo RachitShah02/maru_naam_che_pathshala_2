@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'utils.dart';
 
@@ -108,4 +109,10 @@ List<StudentModel> filterStudents() {
     return student.sid == box.read(Keys.sid);
   }).toList();
   return filteredList;
+}
+
+Future<void> launchurl(String url) async {
+  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+    throw Exception('Could not launch $url');
+  }
 }

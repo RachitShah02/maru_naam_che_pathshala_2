@@ -26,6 +26,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   ];
   List<MenuItem> d = [
     MenuItem(
+        value: '1',
+        label: 'ID Card',
+        icon: const Icon(FontAwesomeIcons.idCard),
+        target: Container()),
+    MenuItem(
         value: '2',
         label: 'Add Child',
         icon: const Icon(Icons.person_add),
@@ -105,7 +110,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   .overflow(TextOverflow.ellipsis)
                   .make(),
               "MNP ID : ${box.read(Keys.sid)}".text.scale(0.7).white.make()
-            ]).flexible(), // TODO : name id
+            ]).flexible(),
             20.hs(),
             const Icon(
               Icons.notifications,

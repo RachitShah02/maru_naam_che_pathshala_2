@@ -1,15 +1,31 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class PointScreen extends StatefulWidget {
   const PointScreen({super.key, this.showAppBar = false});
   final bool showAppBar;
+
   @override
   State<PointScreen> createState() => _PointScreenState();
 }
 
 class _PointScreenState extends State<PointScreen> {
   String year = MyDate.currYear();
+  List<PointList> list = [];
+  List<PointsCardModel> pointsCard = [];
+  String total = '0';
+  List<String> yearList = [];
+  bool isLoad = false;
+  bool isCardLoad = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +46,11 @@ class _PointScreenState extends State<PointScreen> {
                 onPressed: () {
                   Get.bottomSheet(
                     BottomSheet(
-                      onClosing: () {},
+                      onClosing: () {
+                        setState(() {
+                          pointsCard.clear();
+                        });
+                      },
                       builder: (context) {
                         return Container(
                           decoration: const BoxDecoration(
@@ -40,12 +60,13 @@ class _PointScreenState extends State<PointScreen> {
                                   topRight: Radius.circular(20))),
                           height: 400,
                           child: ListView(
-                            children: ["2024", "2025"].map((e) {
+                            children: yearList.map((e) {
                               return ListTile(
                                 onTap: () {
                                   setState(() {
                                     year = e;
                                   });
+                                  getData(qyear: e);
                                   Get.back();
                                 },
                                 title: Text(e),
@@ -67,13 +88,15 @@ class _PointScreenState extends State<PointScreen> {
           ),
           20.vs(),
           Expanded(
-              child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (context, i) {
-                    return Card(
-                      child: ListTile(
-                        onTap: () {
-                          Get.bottomSheet(
+            child: (list.isNotEmpty)
+                ? ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, i) {
+                      return Card(
+                        child: ListTile(
+                          onTap: () async {
+                            await getPointCard(list[i].monthNum.toString());
+                            Get.bottomSheet(
                               isScrollControlled: true,
                               isDismissible: true,
                               DraggableScrollableSheet(
@@ -86,26 +109,41 @@ class _PointScreenState extends State<PointScreen> {
                                       Container(
                                         padding: const EdgeInsets.only(top: 8),
                                         decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20))),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
+                                        ),
                                         child: ListView.builder(
                                           controller: scrollController,
-                                          itemCount: 24,
+                                          itemCount: (pointsCard.isNotEmpty)
+                                              ? pointsCard.length
+                                              : 1,
                                           itemBuilder: (context, index) {
-                                            return ListTile(
-                                              dense: true,
-                                              leading:
-                                                  "$index ${MyDate.currMonth()}"
-                                                      .text
-                                                      .make(),
-                                              title: 'Attendence ${index + 1}'
-                                                  .text
-                                                  .sm
-                                                  .make(),
-                                              trailing: "10 Points".text.make(),
-                                            );
+                                            if (pointsCard.isEmpty) {
+                                              if (!isCardLoad) {
+                                                return progressInd();
+                                              } else {
+                                                return const Center(
+                                                  child:
+                                                      Text("NO POINTS FOUND"),
+                                                ).marginOnly(top: 30);
+                                              }
+                                            } else {
+                                              return ListTile(
+                                                dense: true,
+                                                leading: Text(
+                                                  "${pointsCard[index].date}",
+                                                ),
+                                                title: Text(
+                                                  pointsCard[index].details!,
+                                                ),
+                                                trailing: Text(
+                                                  "${pointsCard[index].points!} Points",
+                                                ),
+                                              );
+                                            }
                                           },
                                         ),
                                       ),
@@ -128,24 +166,50 @@ class _PointScreenState extends State<PointScreen> {
                                     ],
                                   );
                                 },
-                              ));
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        tileColor: Colors.grey.shade200,
-                        title: MyDate.currMonth().text.bold.make(),
-                        trailing: HStack([
-                          "200 Points".text.make(),
-                          10.hs(),
-                          const Icon(Icons.list_alt)
-                        ]),
-                        dense: true,
+                              ),
+                            );
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          tileColor: Colors.grey.shade200,
+                          title: list[i].month!.text.bold.make(),
+                          trailing: HStack([
+                            "${list[i].totalPoints} Points".text.make(),
+                            10.hs(),
+                            const Icon(Icons.list_alt)
+                          ]),
+                          dense: true,
+                        ),
+                      );
+                    },
+                  )
+                : !isLoad
+                    ? progressInd()
+                    : Center(
+                        child: SizedBox(
+                          width: 250,
+                          height: 250,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.medal,
+                                size: 90,
+                                color: AppColors.primaryColor,
+                              ),
+                              10.vs(),
+                              "No Points Found".text.xl.bold.make(),
+                            ],
+                          ),
+                        ),
                       ),
-                    );
-                  })),
+          ),
           ListTile(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             dense: true,
             tileColor: AppColors.primaryColor,
             leading: const Icon(
@@ -153,11 +217,51 @@ class _PointScreenState extends State<PointScreen> {
               color: Colors.white,
             ),
             title: "TOTAL POINTS".text.white.bold.make(),
-            trailing: "2000".text.white.bold.lg.make(),
+            trailing: HStack([
+              const Icon(
+                FontAwesomeIcons.medal,
+                size: 20,
+                color: Colors.white,
+              ),
+              10.hs(),
+              total.text.white.bold.lg.make(),
+            ]),
           ),
-          20.vs()
+          20.vs(),
         ],
       ).px(15),
     );
+  }
+
+  getData({String? qyear}) async {
+    String query = '';
+    if (qyear != null) {
+      log(qyear);
+      query = '&year=$qyear';
+      year = qyear;
+    }
+    final data =
+        await ApiService.getData(endPoint: EndPoints.pointsList, query: query);
+    final result = pointsListModelFromJson(data);
+    setState(() {
+      list = result.pointList!;
+      total = result.total!;
+      yearList = result.yearlist!;
+      isLoad = true;
+    });
+  }
+
+  getPointCard(String month) async {
+    setState(() {
+      isCardLoad = false;
+    });
+    final data = await ApiService.getData(
+        endPoint: EndPoints.pointsCard, query: "&month=$month");
+    final result = pointsCardModelFromJson(data);
+    log(data);
+    setState(() {
+      pointsCard = result;
+      isCardLoad = true;
+    });
   }
 }

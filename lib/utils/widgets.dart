@@ -65,14 +65,18 @@ class MyTextStyle {
   static TextStyle w900() => const TextStyle(fontWeight: FontWeight.w900);
   static TextStyle size(double size) => TextStyle(fontSize: size);
   static TextStyle fontStyle(FontStyle style) => TextStyle(fontStyle: style);
+  static TextStyle fontColor(Color color) => TextStyle(color: color);
   // Method to chain multiple styles
   static TextStyle combine(TextStyle baseStyle,
-      {double? fontSize, FontWeight? fontWeight, FontStyle? fontStyle}) {
+      {double? fontSize,
+      FontWeight? fontWeight,
+      FontStyle? fontStyle,
+      Color? color}) {
     return baseStyle.copyWith(
-      fontSize: fontSize ?? baseStyle.fontSize,
-      fontWeight: fontWeight ?? baseStyle.fontWeight,
-      fontStyle: fontStyle ?? baseStyle.fontStyle,
-    );
+        fontSize: fontSize ?? baseStyle.fontSize,
+        fontWeight: fontWeight ?? baseStyle.fontWeight,
+        fontStyle: fontStyle ?? baseStyle.fontStyle,
+        color: color);
   }
 }
 

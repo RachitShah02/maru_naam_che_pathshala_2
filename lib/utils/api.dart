@@ -6,11 +6,11 @@ import 'utils.dart';
 
 class ApiService {
   static Future<String> getData(
-      {required String endPoint, String page = '1'}) async {
+      {required String endPoint, String page = '1', String query = ''}) async {
     String uid = GetStorage().read(Keys.sid) ?? '';
     final res = await http.get(
         Uri.parse(
-            'http://192.168.29.174/mnpapi/api.php?endPoint=$endPoint&page=$page'),
+            'http://192.168.29.174/mnpapi/api.php?endPoint=$endPoint$query&page=$page'),
         headers: {
           'content-type': 'application/json',
           'Access-Key': '1234',

@@ -2,35 +2,72 @@
 //
 //     final pointsListModel = pointsListModelFromJson(jsonString);
 
+// To parse this JSON data, do
+//
+//     final pointsListModel = pointsListModelFromJson(jsonString);
+
 import 'dart:convert';
 
-List<PointsListModel> pointsListModelFromJson(String str) =>
-    List<PointsListModel>.from(
-        json.decode(str).map((x) => PointsListModel.fromJson(x)));
+PointsListModel pointsListModelFromJson(String str) =>
+    PointsListModel.fromJson(json.decode(str));
 
-String pointsListModelToJson(List<PointsListModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String pointsListModelToJson(PointsListModel data) =>
+    json.encode(data.toJson());
 
 class PointsListModel {
-  final String? month;
-  final String? totalPoints;
-  final String? year;
+  final List<PointList>? pointList;
+  final String? total;
+  final List<String>? yearlist;
 
   PointsListModel({
-    this.month,
-    this.totalPoints,
-    this.year,
+    this.pointList,
+    this.total,
+    this.yearlist,
   });
 
   factory PointsListModel.fromJson(Map<String, dynamic> json) =>
       PointsListModel(
+        pointList: json["point_list"] == null
+            ? []
+            : List<PointList>.from(
+                json["point_list"]!.map((x) => PointList.fromJson(x))),
+        total: json["total"],
+        yearlist: json["yearlist"] == null
+            ? []
+            : List<String>.from(json["yearlist"]!.map((x) => x)),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "point_list": pointList == null
+            ? []
+            : List<dynamic>.from(pointList!.map((x) => x.toJson())),
+        "total": total,
+      };
+}
+
+class PointList {
+  final String? month;
+  final int? monthNum;
+  final String? totalPoints;
+  final String? year;
+
+  PointList({
+    this.month,
+    this.monthNum,
+    this.totalPoints,
+    this.year,
+  });
+
+  factory PointList.fromJson(Map<String, dynamic> json) => PointList(
         month: json["month"],
+        monthNum: json["month_num"],
         totalPoints: json["totalPoints"],
         year: json["year"],
       );
 
   Map<String, dynamic> toJson() => {
         "month": month,
+        "month_num": monthNum,
         "totalPoints": totalPoints,
         "year": year,
       };
@@ -55,16 +92,17 @@ class PointsCardModel {
   final String? pid;
   final String? date;
   final String? time;
+  final int? day;
 
-  PointsCardModel({
-    this.id,
-    this.details,
-    this.points,
-    this.type,
-    this.pid,
-    this.date,
-    this.time,
-  });
+  PointsCardModel(
+      {this.id,
+      this.details,
+      this.points,
+      this.type,
+      this.pid,
+      this.date,
+      this.time,
+      this.day});
 
   factory PointsCardModel.fromJson(Map<String, dynamic> json) =>
       PointsCardModel(
@@ -75,6 +113,7 @@ class PointsCardModel {
         pid: json["pid"],
         date: json["date"],
         time: json["time"],
+        day: json["day"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,5 +124,6 @@ class PointsCardModel {
         "pid": pid,
         "date": date,
         "time": time,
+        "day": day
       };
 }

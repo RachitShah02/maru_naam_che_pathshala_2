@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
@@ -10,8 +12,10 @@ class AttendenceScreen extends StatefulWidget {
 
 class _AttendenceScreenState extends State<AttendenceScreen> {
   bool isLoad = false;
-  List<AttListElement> list = [];
+  List<AttendenceListModelList> list = [];
   int total = 0;
+  String year = MyDate.currYear();
+  List<String> yearList = [];
   @override
   void initState() {
     super.initState();
@@ -42,8 +46,12 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                                   topRight: Radius.circular(20))),
                           height: 400,
                           child: ListView(
-                            children: ["2024", "2025"].map((e) {
+                            children: yearList.map((e) {
                               return ListTile(
+                                onTap: () {
+                                  getData(qyear: e);
+                                  Get.back();
+                                },
                                 title: Text(e),
                               );
                             }).toList(),
@@ -57,7 +65,7 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                   Icons.arrow_drop_down,
                   color: Colors.white,
                 ),
-                label: MyDate.currYear().text.white.make().marginOnly(left: 10),
+                label: year.text.white.make().marginOnly(left: 10),
               ),
             ],
           ),
@@ -70,13 +78,13 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                         return Card(
                           child: ListTile(
                             onTap: () {
-                              Get.dialog(const Material(
+                              Get.dialog(Material(
                                   color: Colors.transparent,
                                   child: Center(
                                     child: SizedBox(
                                         height: 300,
                                         child: CalendarWidget(
-                                          attendenceList: [],
+                                          attendenceList: list[i].list!,
                                         )),
                                   )).onTap(() => Get.back()));
                             },
@@ -114,11 +122,23 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
     );
   }
 
-  getData() async {
-    final data = await ApiService.getData(endPoint: EndPoints.attendenceList);
+  getData({String? qyear}) async {
+    String query = '';
+    if (qyear != null) {
+      log(qyear);
+      query = '&year=$qyear';
+      year = qyear;
+    }
+    setState(() {
+      isLoad = false;
+    });
+    final data = await ApiService.getData(
+        endPoint: EndPoints.attendenceList, query: query);
+    log(data);
     final result = attendenceListModelFromJson(data);
     list = result.list!;
     total = result.total!;
+    yearList = result.yearlist!;
     isLoad = true;
     setState(() {});
   }

@@ -18,6 +18,7 @@ String studentModelToJson(StudentModel data) => json.encode(data.toJson());
 class StudentModel {
   final String? sid;
   final String? fullName;
+  final String? parentName;
   final String? fullAddress;
   final String? birthdate;
   final String? mo1;
@@ -30,6 +31,7 @@ class StudentModel {
   StudentModel({
     this.sid,
     this.fullName,
+    this.parentName,
     this.fullAddress,
     this.birthdate,
     this.mo1,
@@ -43,6 +45,7 @@ class StudentModel {
   factory StudentModel.fromJson(Map<String, dynamic> json) => StudentModel(
         sid: json['sid'],
         fullName: json["full_name"],
+        parentName: json["parent_name"],
         fullAddress: json["full_address"],
         birthdate: json["birthdate"],
         mo1: json["mo_1"],
@@ -56,6 +59,7 @@ class StudentModel {
   Map<String, dynamic> toJson() => {
         "sid": sid,
         "full_name": fullName,
+        "parent_name": parentName,
         "full_address": fullAddress,
         "birthdate": birthdate,
         "mo_1": mo1,

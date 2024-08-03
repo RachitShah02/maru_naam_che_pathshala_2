@@ -1,8 +1,10 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:maru_naam_che_pathshala_2/models/homescreen_model.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
+import 'package:maru_naam_che_pathshala_2/screens/webviews/webview.dart';
+import 'package:maru_naam_che_pathshala_2/screens/zoomable_image/zoomable_image.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -81,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             heroTag: "card",
             icon: FontAwesomeIcons.qrcode,
             barrierColor: Colors.transparent,
-            pushTo: IdCardScreen(
+            pushTo: QrCodeScreen(
               qrData: box.read(Keys.sid),
             )));
   }
@@ -135,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
             10.vs(),
             "Sutra : $sutraName".text.make().py(5),
             "Gatha : $gatha".text.make().py(5),
-            "Starting Date : $sutraDate".text.make().py(5)
+            "Complete Date : $sutraDate".text.make().py(5)
           ],
         ),
       ),
@@ -226,32 +228,46 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SizedBox(
           width: Get.width,
-          height: 100,
+          height: 180,
           child: PageView.builder(
               onPageChanged: (v) {
                 setState(() {
                   _currSlide = v;
                 });
               },
-              itemCount: 5,
+              itemCount: homeSlider!.length,
               itemBuilder: (context, i) {
-                return const Placeholder().px(20);
+                return CachedNetworkImage(
+                  imageUrl: homeSlider![i].img!,
+                  fit: BoxFit.fill,
+                ).onTap(() async {
+                  String target = homeSlider![i].target!;
+                  String type = homeSlider![i].type!;
+                  if (type == 'banner') {
+                    Get.to(() => ZoomableImage(img: target));
+                  } else if (type == 'inappurl') {
+                    Get.to(() => MyWebView(url: target));
+                  } else if (type == 'outappurl') {
+                    launchurl(target);
+                  }
+                }).px(15);
               }),
         ).marginOnly(bottom: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(5, (index) {
-            return Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: (_currSlide == index)
-                      ? AppColors.primaryColor
-                      : Colors.blueGrey),
-            ).marginSymmetric(horizontal: 3);
-          }),
-        ),
+        if (homeSlider!.length > 1)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(homeSlider!.length, (index) {
+              return Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: (_currSlide == index)
+                        ? AppColors.primaryColor
+                        : Colors.blueGrey),
+              ).marginSymmetric(horizontal: 3);
+            }),
+          ),
       ],
     );
   }
