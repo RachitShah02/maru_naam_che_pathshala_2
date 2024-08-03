@@ -4,8 +4,8 @@ import 'package:maru_naam_che_pathshala_2/screens/login/qrlogin.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
+  const LoginScreen({super.key, this.addNew = false});
+  final bool addNew;
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -18,6 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
       statsBarBright: Brightness.light,
     );
     return Scaffold(
+        appBar: (widget.addNew)
+            ? AppBar(
+                title: "Add New Child".text.make(),
+              )
+            : null,
         backgroundColor: AppColors.primaryColor,
         body: Column(children: [
           const Spacer(

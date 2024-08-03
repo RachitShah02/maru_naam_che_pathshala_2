@@ -109,6 +109,7 @@ class _QrCodeLoginScreenState extends State<QrCodeLoginScreen> {
     setState(() {
       isLogin = true;
     });
+    String oldSid = box.read(Keys.sid) ?? '';
     box.write(Keys.sid, qrCodeData);
     final data = await ApiService.getData(endPoint: 'login');
     final result = studentModelFromJson(data);
@@ -128,7 +129,7 @@ class _QrCodeLoginScreenState extends State<QrCodeLoginScreen> {
       Get.offAll(() => const DashBoardScreen(),
           transition: Transition.leftToRight);
     } else {
-      box.write(Keys.sid, '');
+      box.write(Keys.sid, oldSid);
       customSnackBar(
           title: "Alert",
           message: "Invalid MNP ID",

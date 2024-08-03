@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:maru_naam_che_pathshala_2/screens/dashboard/views/drawer.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
@@ -26,20 +23,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   ];
   List<MenuItem> d = [
     MenuItem(
-        value: '1',
-        label: 'ID Card',
-        icon: const Icon(FontAwesomeIcons.idCard),
-        target: Container()),
+      value: '1',
+      label: 'ID Card',
+      icon: const Icon(FontAwesomeIcons.idCard),
+    ),
     MenuItem(
-        value: '2',
-        label: 'Add Child',
-        icon: const Icon(Icons.person_add),
-        target: Container()),
+      value: '2',
+      label: 'Add Child',
+      icon: const Icon(Icons.person_add),
+    ),
     MenuItem(
-        value: '3',
-        label: 'Switch Child',
-        icon: const Icon(Icons.switch_account),
-        target: Container()),
+      value: '3',
+      label: 'Switch Child',
+      icon: const Icon(Icons.switch_account),
+    ),
   ];
   String studentname = '';
   @override
@@ -47,6 +44,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     statusBarColor(navigationBarColor: AppColors.primaryColor);
     List<StudentModel> studentList = filterStudents();
     studentname = studentList[0].fullName!;
+    statusBarColor(statsBarBright: Brightness.dark);
     super.initState();
   }
 
@@ -116,9 +114,22 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               Icons.notifications,
               color: Colors.white,
             ).onTap(() {
-              log(box.read(Keys.sid));
+              Get.to(() => const NotificationsScreen());
             }),
             PopupMenuButton(
+              onSelected: (value) {
+                if (value == '1') {
+                  Get.to(() => const IdcardScreen());
+                } else if (value == '2') {
+                  Get.to(() => const LoginScreen(
+                        addNew: true,
+                      ));
+                } else if (value == '3') {
+                  Get.to(() => const SwitchChildScreen())!.then((_) {
+                    setState(() {});
+                  });
+                }
+              },
               iconSize: 30,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
@@ -128,9 +139,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               itemBuilder: (context) {
                 return d.map((e) {
                   return PopupMenuItem(
-                      onTap: () {
-                        log(e.value);
-                      },
                       value: e.value,
                       child: Row(
                         children: [
@@ -196,11 +204,6 @@ class MenuItem {
   final String value;
   final String label;
   final Widget icon;
-  final Widget target;
 
-  MenuItem(
-      {required this.value,
-      required this.label,
-      required this.icon,
-      required this.target});
+  MenuItem({required this.value, required this.label, required this.icon});
 }

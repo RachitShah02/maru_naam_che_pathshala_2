@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maru_naam_che_pathshala_2/screens/dashboard/views/home/idcard.dart';
 import 'package:maru_naam_che_pathshala_2/screens/login/login.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
@@ -35,6 +36,14 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
                 20.vs(),
+                ListTile(
+                  onTap: () => Get.to(() => const IdcardScreen()),
+                  leading: const Icon(
+                    FontAwesomeIcons.idCard,
+                    size: 22,
+                  ),
+                  title: "ID Card".text.make(),
+                ),
                 ListTile(
                   leading: const Icon(
                     FontAwesomeIcons.chartBar,
@@ -95,11 +104,16 @@ class MyDrawer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              "Privacy Policy".text.sm.make().p(10),
-              "|".text.make().p(10),
-              "Terms & Conditions".text.sm.make().p(10),
+              "Privacy Policy".text.sm.make().px(10),
+              "|".text.make().px(10),
+              "Terms & Conditions".text.sm.make().px(10),
             ],
           ),
+          5.vs(),
+          "Made By BIZYLOOK".text.make().py(3).onTap(() {
+            launchurl(
+                'https://wa.me/919327515849?text=hello from pathshala app');
+          })
         ],
       ),
     );

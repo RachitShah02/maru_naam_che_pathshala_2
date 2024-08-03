@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
@@ -95,12 +93,10 @@ class _PinLoinScreenState extends State<PinLoinScreen> {
   }
 
   void handleLogin(String qrCodeData) async {
-    log(box.read(Keys.sid));
+    String oldSid = box.read(Keys.sid) ?? '';
     qrCodeData = qrCodeData.toUpperCase();
-    log(qrCodeData);
     box.write(Keys.sid, qrCodeData);
     final data = await ApiService.getData(endPoint: 'login');
-    log(data);
     final result = studentModelFromJson(data);
     if (result.sid == qrCodeData) {
       List<StudentModel> studentList = [];
@@ -121,7 +117,7 @@ class _PinLoinScreenState extends State<PinLoinScreen> {
       Get.offAll(() => const DashBoardScreen(),
           transition: Transition.leftToRight);
     } else {
-      box.write(Keys.sid, '');
+      box.write(Keys.sid, oldSid);
       customSnackBar(
         title: "Alert",
         message: "Invalid MNP ID",

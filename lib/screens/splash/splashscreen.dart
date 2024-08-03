@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:maru_naam_che_pathshala_2/screens/intro/intro_screen.dart';
-import 'package:maru_naam_che_pathshala_2/screens/login/login.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
