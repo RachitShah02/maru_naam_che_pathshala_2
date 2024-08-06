@@ -6,6 +6,7 @@ export 'api.dart';
 export 'calander_widget.dart';
 export 'hero_dailog_route.dart';
 export 'custom_rect_tween.dart';
+export 'pachkhan_string.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:get/get.dart';
 export 'package:velocity_x/velocity_x.dart';

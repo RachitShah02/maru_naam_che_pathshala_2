@@ -25,12 +25,9 @@ class QrCodeScreen extends StatelessWidget {
                 children: [
                   Center(
                     child: QrImageView(
-                      dataModuleStyle: const QrDataModuleStyle(
-                          color: Colors.black,
-                          dataModuleShape: QrDataModuleShape.circle),
-                      errorCorrectionLevel: QrErrorCorrectLevel.H,
+                      errorCorrectionLevel: QrErrorCorrectLevel.L,
                       eyeStyle: QrEyeStyle(
-                          eyeShape: QrEyeShape.circle,
+                          eyeShape: QrEyeShape.square,
                           color: AppColors.primaryColor),
                       embeddedImageStyle:
                           const QrEmbeddedImageStyle(size: Size(60, 50)),

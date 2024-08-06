@@ -23,9 +23,9 @@ class _SwitchChildScreenState extends State<SwitchChildScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: change ? false : true,
       onPopInvoked: (didpop) {
-        change ? Get.offAll(() => const DashBoardScreen()) : Get.back();
+        if (change) Get.offAll(() => const DashBoardScreen());
       },
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
@@ -48,24 +48,39 @@ class _SwitchChildScreenState extends State<SwitchChildScreen> {
                 tileColor: Colors.white,
                 leading: const Icon(FontAwesomeIcons.idCard),
                 title: students[i].fullName!.text.sm.make(),
+                horizontalTitleGap: 10,
                 trailing: students[i].sid! == mnpid
                     ? "Selected"
                         .text
                         .green500
                         .make()
                         .box
+                        .width(70)
+                        .height(30)
+                        .roundedSM
+                        .alignCenter
                         .p4
                         .border(color: Colors.green)
                         .make()
-                    : ElevatedButton(
-                        onPressed: () {
-                          change = true;
-                          box.write(Keys.sid, students[i].sid!);
-                          mnpid = students[i].sid!;
-                          setState(() {});
-                        },
-                        child: "Select".text.white.make()),
-              );
+                    : "Select"
+                        .text
+                        .white
+                        .make()
+                        .box
+                        .width(70)
+                        .height(30)
+                        .roundedSM
+                        .alignCenter
+                        .p4
+                        .color(AppColors.primaryColor)
+                        .make()
+                        .onTap(() {
+                        change = true;
+                        box.write(Keys.sid, students[i].sid!);
+                        mnpid = students[i].sid!;
+                        setState(() {});
+                      }),
+              ).marginOnly(bottom: 10);
             }),
       ),
     );

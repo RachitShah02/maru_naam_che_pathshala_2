@@ -22,4 +22,6 @@ class EndPoints {
   static String ledgerboard = 'ledgerboard';
   static String events = 'events';
   static String addPoints = 'add-points';
+  static String parentsPointsList = 'parents-points-list';
+  static String pointsDates = 'points-dates';
 }

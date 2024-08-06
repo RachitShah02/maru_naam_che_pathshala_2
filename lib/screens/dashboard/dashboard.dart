@@ -41,10 +41,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   String studentname = '';
   @override
   void initState() {
-    statusBarColor(navigationBarColor: AppColors.primaryColor);
+    statusBarColor(
+        navigationBarColor: AppColors.primaryColor,
+        statsBarBright: Brightness.dark);
     List<StudentModel> studentList = filterStudents();
     studentname = studentList[0].fullName!;
-    statusBarColor(statsBarBright: Brightness.dark);
     super.initState();
   }
 
@@ -56,22 +57,38 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: _page == 0 ? Colors.grey.shade100 : Colors.white,
-      key: _key,
-      bottomNavigationBar: bottomBar(),
-      drawer: const MyDrawer(),
-      body: SafeArea(
-        child: PageView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            itemCount: _pages.length,
-            itemBuilder: (context, i) {
-              return Column(
-                children: [topCard().p(10), Expanded(child: _pages[i])],
-              );
-            }),
+    return PopScope(
+      canPop: (_page == 0) ? true : false,
+      onPopInvoked: (_) {
+        if (_page > 0) {
+          setState(() {
+            _page = 0;
+          });
+          _pageController.jumpToPage(0);
+        }
+      },
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: _page == 0 ? Colors.grey.shade200 : Colors.white,
+        key: _key,
+        bottomNavigationBar: bottomBar(),
+        drawer: const MyDrawer(),
+        body: SafeArea(
+          child: Column(
+            children: [
+              topCard().px(10),
+              Expanded(
+                child: PageView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    itemCount: _pages.length,
+                    itemBuilder: (context, i) {
+                      return _pages[i];
+                    }),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -159,7 +176,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   CurvedNavigationBar bottomBar() {
     return CurvedNavigationBar(
       height: 60,
-      index: 0,
+      index: _page,
       items: [
         barItems(icon: Icons.home, label: "Home", index: 0),
         barItems(icon: Icons.calendar_month, label: "Attendance", index: 1),

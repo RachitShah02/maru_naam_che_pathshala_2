@@ -131,17 +131,24 @@ class _PointScreenState extends State<PointScreen> {
                                                 ).marginOnly(top: 30);
                                               }
                                             } else {
-                                              return ListTile(
-                                                dense: true,
-                                                leading: Text(
-                                                  "${pointsCard[index].date}",
-                                                ),
-                                                title: Text(
-                                                  pointsCard[index].details!,
-                                                ),
-                                                trailing: Text(
-                                                  "${pointsCard[index].points!} Points",
-                                                ),
+                                              return Column(
+                                                children: [
+                                                  if (index == 0) 15.vs(),
+                                                  ListTile(
+                                                    dense: true,
+                                                    leading: Text(
+                                                      pointsCard[index].date!,
+                                                    ),
+                                                    title: Text(
+                                                      pointsCard[index]
+                                                          .details!,
+                                                    ),
+                                                    trailing: Text(
+                                                      "${pointsCard[index].points!} Points",
+                                                    ),
+                                                  ),
+                                                  const Divider(),
+                                                ],
                                               );
                                             }
                                           },

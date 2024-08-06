@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:maru_naam_che_pathshala_2/screens/intro/intro_screen.dart';
 import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
@@ -23,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<String> checkLogin() async {
+    log(box.read(Keys.sid));
     return await ApiService.getData(endPoint: 'splash');
   }
 

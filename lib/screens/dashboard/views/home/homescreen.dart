@@ -33,51 +33,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade100,
-        body: SafeArea(
-          child: (isLoad)
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      slider(),
-                      15.vs(),
-                      ListTile(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        dense: true,
-                        tileColor: AppColors.primaryColor,
-                        leading: const Icon(
-                          FontAwesomeIcons.trophy,
-                          color: Colors.white,
-                        ),
-                        title: "TOTAL POINTS".text.white.bold.make(),
-                        trailing: HStack([
-                          const Icon(
-                            FontAwesomeIcons.medal,
-                            size: 20,
-                            color: Colors.white,
-                          ),
-                          10.hs(),
-                          totalPoints.text.white.bold.lg.make(),
-                        ]),
-                      ).px(15),
-                      15.vs(),
-                      detailsCard().px(10),
-                      15.vs(),
-                      currentMonthPoints().px(10),
-                      15.vs(),
-                      attendenceCard().px(10),
-                      15.vs(),
-                      if (sutra != null) sutraCard().px(10),
-                      30.vs()
-                    ],
-                  ),
-                )
-              : Center(
-                  child: CircularProgressIndicator(
-                  color: AppColors.primaryColor,
-                )),
-        ),
+        backgroundColor: Colors.grey.shade200,
+        body: (isLoad)
+            ? SingleChildScrollView(
+                child: Column(
+                  children: [
+                    15.vs(),
+                    slider(),
+                    15.vs(),
+                    totalPointsCard().px(15),
+                    15.vs(),
+                    currentMonthPoints().px(10),
+                    15.vs(),
+                    attendenceCard().px(10),
+                    15.vs(),
+                    detailsCard().px(10),
+                    15.vs(),
+                    if (sutra != null) sutraCard().px(10),
+                    30.vs()
+                  ],
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                color: AppColors.primaryColor,
+              )),
         floatingActionButton: heroRoute(
             context: context,
             heroTag: "card",
@@ -86,6 +66,28 @@ class _HomeScreenState extends State<HomeScreen> {
             pushTo: QrCodeScreen(
               qrData: box.read(Keys.sid),
             )));
+  }
+
+  ListTile totalPointsCard() {
+    return ListTile(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      dense: true,
+      tileColor: AppColors.primaryColor,
+      leading: const Icon(
+        FontAwesomeIcons.trophy,
+        color: Colors.white,
+      ),
+      title: "TOTAL POINTS".text.white.bold.make(),
+      trailing: HStack([
+        const Icon(
+          FontAwesomeIcons.medal,
+          size: 20,
+          color: Colors.white,
+        ),
+        10.hs(),
+        totalPoints.text.white.bold.lg.make(),
+      ]),
+    );
   }
 
   Card currentMonthPoints() {
@@ -240,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return CachedNetworkImage(
                   imageUrl: homeSlider![i].img!,
                   fit: BoxFit.fill,
-                ).onTap(() async {
+                ).card.make().px(10).onTap(() async {
                   String target = homeSlider![i].target!;
                   String type = homeSlider![i].type!;
                   if (type == 'banner') {
@@ -250,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else if (type == 'outappurl') {
                     launchurl(target);
                   }
-                }).px(15);
+                });
               }),
         ).marginOnly(bottom: 10),
         if (homeSlider!.length > 1)

@@ -26,9 +26,13 @@ class ApiService {
       {required String endPoint, required Map<String, String> data}) async {
     String uid = GetStorage().read(Keys.sid) ?? '';
     final res = await http.post(
-        Uri.parse('http://localhost/mnpapi/api.php?endPoint=$endPoint'),
-        body: data,
-        headers: {'Access-Key': '1234', 'Sid': uid});
+        Uri.parse('http://192.168.29.174/mnpapi/api.php?endPoint=$endPoint'),
+        body: jsonEncode(data),
+        headers: {
+          'Access-Key': '1234',
+          'Sid': uid,
+          'Content-Type': 'application/json',
+        });
     if (res.statusCode == 200) {
       return res.body;
     }
