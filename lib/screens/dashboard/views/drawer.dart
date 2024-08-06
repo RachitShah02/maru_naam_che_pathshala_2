@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:maru_naam_che_pathshala_2/screens/dashboard/labharthi/rewards.dart';
+import 'package:maru_naam_che_pathshala_2/screens/dashboard/rewards/labharthi.dart';
 import 'package:maru_naam_che_pathshala_2/screens/dashboard/views/home/idcard.dart';
 import 'package:maru_naam_che_pathshala_2/screens/ledgerboard/ledger_board.dart';
 import 'package:maru_naam_che_pathshala_2/screens/login/login.dart';
 import 'package:maru_naam_che_pathshala_2/screens/pachkhan/pachkhan_screen.dart';
 import 'package:maru_naam_che_pathshala_2/screens/parents_points/points_by_parents.dart';
+import 'package:maru_naam_che_pathshala_2/screens/screens.dart';
 import 'package:maru_naam_che_pathshala_2/utils/utils.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -66,13 +69,6 @@ class MyDrawer extends StatelessWidget {
                   title: "Leaderboard".text.make(),
                 ),
                 ListTile(
-                  leading: const Icon(
-                    FontAwesomeIcons.calendarDays,
-                    size: 22,
-                  ),
-                  title: "Events".text.make(),
-                ),
-                ListTile(
                   onTap: () => Get.to(() => const PachkhanScreen()),
                   leading: const Icon(
                     FontAwesomeIcons.rectangleList,
@@ -81,6 +77,15 @@ class MyDrawer extends StatelessWidget {
                   title: "Pachkhan".text.make(),
                 ),
                 ListTile(
+                  onTap: () => Get.to(() => const EventsList()),
+                  leading: const Icon(
+                    FontAwesomeIcons.calendarDays,
+                    size: 22,
+                  ),
+                  title: "Events".text.make(),
+                ),
+                ListTile(
+                  onTap: () => Get.to(() => const Labharthi()),
                   leading: const Icon(
                     FontAwesomeIcons.userGroup,
                     size: 22,
@@ -88,6 +93,7 @@ class MyDrawer extends StatelessWidget {
                   title: "Labharthi".text.make(),
                 ),
                 ListTile(
+                  onTap: () => Get.to(() => const Rewards()),
                   leading: const Icon(
                     FontAwesomeIcons.gifts,
                     size: 22,
@@ -95,6 +101,16 @@ class MyDrawer extends StatelessWidget {
                   title: "Rewards".text.make(),
                 ),
                 ListTile(
+                  onTap: () async {
+                    Pathshala p = box.read(Keys.pathshalaDetails);
+                    String help = p.help!;
+                    String pathshalaName = p.pathshala!;
+                    List<StudentModel> studentList = filterStudents();
+                    final studentname = studentList[0].fullName!;
+                    String url =
+                        'https://wa.me/91$help?text=pathshala-$pathshalaName,student-$studentname';
+                    await launchurl(url);
+                  },
                   leading: const Icon(
                     FontAwesomeIcons.whatsapp,
                   ),
@@ -104,6 +120,7 @@ class MyDrawer extends StatelessWidget {
                   onTap: () {
                     box.write(Keys.sid, '');
                     box.write(Keys.studentList, '');
+                    box.write(Keys.pathshalaDetails, '');
                     Get.offAll(() => const LoginScreen());
                   },
                   leading: const Icon(

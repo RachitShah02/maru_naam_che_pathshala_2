@@ -10,7 +10,7 @@ class ApiService {
     String uid = GetStorage().read(Keys.sid) ?? '';
     final res = await http.get(
         Uri.parse(
-            'http://192.168.29.174/mnpapi/api.php?endPoint=$endPoint$query&page=$page'),
+            'http://192.168.1.16//mnpapi/api.php?endPoint=$endPoint$query&page=$page'),
         headers: {
           'content-type': 'application/json',
           'Access-Key': '1234',
@@ -26,7 +26,7 @@ class ApiService {
       {required String endPoint, required Map<String, String> data}) async {
     String uid = GetStorage().read(Keys.sid) ?? '';
     final res = await http.post(
-        Uri.parse('http://192.168.29.174/mnpapi/api.php?endPoint=$endPoint'),
+        Uri.parse('http://192.168.1.16//mnpapi/api.php?endPoint=$endPoint'),
         body: jsonEncode(data),
         headers: {
           'Access-Key': '1234',
@@ -43,7 +43,7 @@ class ApiService {
       {required String endPoint, required Map<String, String> data}) async {
     String uid = GetStorage().read(Keys.sid) ?? '';
     final res = await http.put(
-      Uri.parse('http://localhost/mnpapi/api.php?endPoint=$endPoint'),
+      Uri.parse('http://192.168.1.16//mnpapi/api.php?endPoint=$endPoint'),
       headers: {'Access-Key': '1234', 'Sid': uid},
       body: jsonEncode(data),
     );

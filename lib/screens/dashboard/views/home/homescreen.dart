@@ -284,6 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
     totalPoints = result.totalPoints!;
     sutra = result.sutra;
     pathshala = result.pathshala;
+    box.write(Keys.pathshalaDetails, pathshala!);
     totalAttendence = result.totalAttendence;
     isLoad = true;
     setState(() {});

@@ -10,6 +10,9 @@ List<EventsModel> eventsModelFromJson(String str) => List<EventsModel>.from(
 String eventsModelToJson(List<EventsModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+EventsModel eventModelFromJson(String str) =>
+    EventsModel.fromJson(json.decode(str));
+
 class EventsModel {
   final int? id;
   final String? title;

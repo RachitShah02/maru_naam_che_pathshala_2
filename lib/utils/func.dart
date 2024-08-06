@@ -116,3 +116,7 @@ Future<void> launchurl(String url) async {
     throw Exception('Could not launch $url');
   }
 }
+
+unFocus() => FocusManager.instance.primaryFocus?.unfocus();
+String ddMMyyyy(String date) =>
+    DateFormat('dd-MM-yyyy').format(DateTime.parse(date));

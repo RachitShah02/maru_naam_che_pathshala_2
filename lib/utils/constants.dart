@@ -4,6 +4,7 @@ class Keys {
   static String sid = 'USER_ID';
   static String isFirst = 'IS_FIRST';
   static String studentList = 'STUDENT_LIST';
+  static String pathshalaDetails = 'PATHSHALA_DETAILS';
 }
 
 class EndPoints {
@@ -21,6 +22,7 @@ class EndPoints {
   static String labharthi = 'labharthi';
   static String ledgerboard = 'ledgerboard';
   static String events = 'events';
+  static String eventsDetails = 'events-details';
   static String addPoints = 'add-points';
   static String parentsPointsList = 'parents-points-list';
   static String pointsDates = 'points-dates';

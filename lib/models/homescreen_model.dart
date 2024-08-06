@@ -172,16 +172,13 @@ class Pathshala {
   final String? time;
   final String? panditji;
   final String? mobile;
-  Pathshala({
-    this.pathshala,
-    this.time,
-    this.panditji,
-    this.mobile,
-  });
+  final String? help;
+  Pathshala({this.pathshala, this.time, this.panditji, this.mobile, this.help});
   factory Pathshala.fromJson(Map<String, dynamic> json) => Pathshala(
       pathshala: json["pathshala"],
       panditji: json["panditji"],
       time: json["time"],
+      help: json["help"],
       mobile: json["mobile"]);
 
   Map<String, dynamic> toJson() => {
@@ -189,5 +186,6 @@ class Pathshala {
         "panditji": panditji,
         "mobile": mobile,
         "time": time,
+        "help": help
       };
 }

@@ -9,5 +9,7 @@ export 'dashboard/views/home/qrcode.dart';
 export 'dashboard/views/home/idcard.dart';
 export 'dashboard/views/drawer.dart';
 export 'login/login.dart';
+export 'events/events_list.dart';
+export 'events/events_details.dart';
 export 'dashboard/notifications/notifications.dart';
 export 'dashboard/switch_child/switch_child.dart';
